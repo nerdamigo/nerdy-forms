@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="INerdyFormHandler.cs" />
     <Compile Include="NerdyFormController.cs" />
+    <Compile Include="NerdyFormDynamic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

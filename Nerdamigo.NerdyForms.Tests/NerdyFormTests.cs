@@ -2,6 +2,8 @@
 using System.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using Moq;
+using System.Diagnostics;
 
 namespace Nerdamigo.NerdyForms.Tests
 {
@@ -21,7 +23,6 @@ namespace Nerdamigo.NerdyForms.Tests
 		{
 			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>());
 		}
-		
 
 		[TestMethod]
 		[ExpectedException(typeof(ArgumentException), "An form handler list containing a null handler was allowed.")]
@@ -29,12 +30,41 @@ namespace Nerdamigo.NerdyForms.Tests
 		{
 			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { (INerdyFormHandler)null });
 		}
+		
+		[TestMethod]
+		public void DynamicFormObjectNotNull()
+		{
+			var tMock = new Mock<INerdyFormHandler>();
+			
+			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { tMock.Object });
+			var tContextMocks = new ContextMocks(tController);
+
+			tController.Handle("Test");
+	
+			tMock.Verify(h => h.Handle(It.IsNotNull<object>()));
+		}
 
 		[TestMethod]
-		public void DynamicFormObjectConstructed()
+		public void DynamicFormObjectContainsMetadata()
 		{
-			var tRequest = new HttpRequest(null, "http://nerdyforms.nerdamigo.com", null);
-			HttpContext.Current = new HttpContext(tRequest, new HttpResponse(null));
+			var tMock = new Mock<INerdyFormHandler>();
+			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { tMock.Object });
+			var tContextMocks = new ContextMocks(tController);
+			tContextMocks.RequestHeaders.Add("TestHeader", "TestValue");
+
+			dynamic tData = null;
+			tMock.Setup(handler => handler.Handle(It.IsAny<object>())).Callback<dynamic>(data =>
+			{
+				tData = data;
+			});
+
+			tController.Handle("Test");
+
+			tMock.Verify(handler => handler.Handle(It.IsAny<object>()));
+
+			Assert.IsNotNull(tData._Metadata, "_Metadata missing");
+			Assert.IsNotNull(tData._Metadata.Request, "Metadata.Request was null");
+			Assert.IsNotNull(tData._Metadata.Request.Headers["TestHeader"], "Metadata.Request.Headers[\"TestHeader\"] was null");
 		}
 	}
 }
