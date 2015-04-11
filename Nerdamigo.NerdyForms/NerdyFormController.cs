@@ -7,11 +7,16 @@ using System.Web.Mvc;
 
 namespace Nerdamigo.NerdyForms
 {
-	public class NerdyForm : Controller
+	public class NerdyFormController : Controller
 	{
 		private List<INerdyFormHandler> mFormHandlerList;
-		public NerdyForm(List<INerdyFormHandler> aFormHandlerList)
+		public NerdyFormController(List<INerdyFormHandler> aFormHandlerList)
 		{
+			if (aFormHandlerList == null || aFormHandlerList.Count == 0 || aFormHandlerList.Any(a => a == null))
+			{
+				throw new ArgumentException("aFormHandlerList");
+			}
+
 			mFormHandlerList = aFormHandlerList;
 		}
 
@@ -22,7 +27,8 @@ namespace Nerdamigo.NerdyForms
 				throw new ArgumentException("Form Name is Required");
 			}
 
-			
+			var s = Request.Form["test"];
+			Console.Write(s);
 
 			return new EmptyResult();
 		}
