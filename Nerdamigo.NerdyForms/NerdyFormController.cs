@@ -36,6 +36,12 @@ namespace Nerdamigo.NerdyForms
 				try
 				{
 					dynamic tData = new NerdyFormDynamic();
+
+					foreach (string iFormKey in Request.Form.AllKeys)
+					{
+						tData[iFormKey] = Request.Form[iFormKey];
+					}
+
 					tData._Metadata = new NerdyFormDynamic();
 					tData._Metadata.Request = new NerdyFormDynamic();
 					tData._Metadata.Request.RawUrl = Request.RawUrl;

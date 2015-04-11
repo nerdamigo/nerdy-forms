@@ -35,6 +35,32 @@ namespace Nerdamigo.NerdyForms
 			return true;
 		}
 
+		public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+		{
+			if (indexes.Length != 1)
+			{
+				throw new ArgumentException("Multi-Valued indexes not supported");
+			}
+
+			string tKey = indexes[0].ToString();
+
+			if (String.IsNullOrEmpty(tKey))
+			{
+				throw new ArgumentException("Null or empty index not supported");
+			}
+
+			if (!mData.ContainsKey(tKey))
+			{
+				mData.Add(tKey, value);
+			}
+			else
+			{
+				mData[tKey] = value;
+			}
+
+			return true;
+		}
+
 		public override bool TryGetMember(GetMemberBinder binder, out object result)
 		{
 			mData.TryGetValue(binder.Name, out result);

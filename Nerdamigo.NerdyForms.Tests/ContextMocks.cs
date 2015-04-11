@@ -15,6 +15,8 @@ namespace Nerdamigo.NerdyForms.Tests
 		public Moq.Mock<HttpContextBase> HttpContext { get; set; }
 		public Moq.Mock<HttpRequestBase> Request { get; set; }
 		public NameValueCollection RequestHeaders { get; private set; }
+		public NameValueCollection RequestForm { get; private set; }
+		public NameValueCollection RequestQuerystring { get; private set; }
 		public RouteData RouteData { get; set; }
 
 		public ContextMocks(Controller controller)
@@ -23,15 +25,25 @@ namespace Nerdamigo.NerdyForms.Tests
 			HttpContext = new Moq.Mock<HttpContextBase>();
 			Request = new Moq.Mock<HttpRequestBase>();
 			RequestHeaders = new NameValueCollection();
+			RequestForm = new NameValueCollection();
+			RequestQuerystring = new NameValueCollection();
+			RouteData = new RouteData();
 
 			HttpContext.Setup(x => x.Request).Returns(Request.Object);
+			HttpContext.Setup(x => x.Request.RequestContext.RouteData).Returns(RouteData);
 			HttpContext.Setup(x => x.Request.Headers).Returns(RequestHeaders);
 
-			//setup Response, Session, etc similarly with either mocks or fakes
+			HttpContext.Setup(x => x.Request.Form).Returns(RequestForm);
+			HttpContext.Setup(x => x.Request.QueryString).Returns(RequestQuerystring);
 
+			HttpContext.Setup(x => x.Request.Unvalidated.Form).Returns(RequestForm);
+			HttpContext.Setup(x => x.Request.Unvalidated.QueryString).Returns(RequestQuerystring);
+			
 			//apply context to controller
-			RequestContext rc = new RequestContext(HttpContext.Object, new RouteData());
+			RequestContext rc = new RequestContext(HttpContext.Object, RouteData);
+
 			controller.ControllerContext = new ControllerContext(rc, controller);
+			controller.ValueProvider = new FormCollection(RequestForm).ToValueProvider();
 		}
 	}
 }
