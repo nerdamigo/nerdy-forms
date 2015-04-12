@@ -101,6 +101,21 @@ namespace Nerdamigo.NerdyForms.Tests
 			tContextMocks.RequestForm.Add("Person.EmailAddress", "test@test.com");
 			tContextMocks.RequestForm.Add("Person.FirstName", "Bob");
 			tContextMocks.RequestForm.Add("Person.LastName", "McTaggart");
+			tContextMocks.RequestForm.Add("Person2[0].EmailAddress", "test@test.com");
+			tContextMocks.RequestForm.Add("Person2[0].FirstName", "Bob");
+			tContextMocks.RequestForm.Add("Person2[0].LastName", "McTaggart");
+			tContextMocks.RequestForm.Add("Person2[1].EmailAddress", "test2@test.com");
+			tContextMocks.RequestForm.Add("Person2[1].FirstName", "Bob2");
+			tContextMocks.RequestForm.Add("Person2[1].LastName", "McTaggart2");
+			tContextMocks.RequestForm.Add("Person2[2].EmailAddress", "test3@test.com");
+			tContextMocks.RequestForm.Add("Person2[2].FirstName", "Bob3");
+			tContextMocks.RequestForm.Add("Person2[2].LastName", "McTaggart3");
+			tContextMocks.RequestForm.Add("two_d[0][0]", "00");
+			tContextMocks.RequestForm.Add("two_d[0][1]", "01");
+			tContextMocks.RequestForm.Add("two_d[1][0]", "10");
+			tContextMocks.RequestForm.Add("two_d[1][1]", "11");
+			tContextMocks.RequestForm.Add("ride[0]", "goesaway");
+			tContextMocks.RequestForm.Add("ride[0].property", "overidden!");
 
 			dynamic tData = null;
 			tMock.Setup(handler => handler.Handle(It.IsAny<object>())).Callback<dynamic>(data =>
@@ -112,9 +127,30 @@ namespace Nerdamigo.NerdyForms.Tests
 
 			tMock.Verify(handler => handler.Handle(It.IsAny<object>()));
 
-			Assert.IsNotNull(tData.Person.EmailAddress);
-			Assert.IsNotNull(tData.Person.FirstName);
-			Assert.IsNotNull(tData.Person.LastName);
+			Assert.IsNotNull(tData.Person, "Person null");
+			Assert.AreEqual(tData.Person.EmailAddress, tContextMocks.RequestForm["Person.EmailAddress"], "Person.EmailAddress");
+			Assert.AreEqual(tData.Person.FirstName, tContextMocks.RequestForm["Person.FirstName"], "Person.FirstName");
+			Assert.AreEqual(tData.Person.LastName, tContextMocks.RequestForm["Person.LastName"], "Person.LastName");
+
+			Assert.IsNotNull(tData.Person2[0], "Person2[0] null");
+			Assert.AreEqual(tData.Person2[0].EmailAddress, tContextMocks.RequestForm["Person2[0].EmailAddress"], "Person2[0].EmailAddress");
+			Assert.AreEqual(tData.Person2[0].FirstName, tContextMocks.RequestForm["Person2[0].FirstName"], "Person2[0].FirstName");
+			Assert.AreEqual(tData.Person2[0].LastName, tContextMocks.RequestForm["Person2[0].LastName"], "Person2[0].LastName");
+			Assert.AreEqual(tData.Person2[1].EmailAddress, tContextMocks.RequestForm["Person2[1].EmailAddress"], "Person2[1].EmailAddress");
+			Assert.AreEqual(tData.Person2[1].FirstName, tContextMocks.RequestForm["Person2[1].FirstName"], "Person2[1].FirstName");
+			Assert.AreEqual(tData.Person2[1].LastName, tContextMocks.RequestForm["Person2[1].LastName"], "Person2[1].LastName");
+			Assert.AreEqual(tData.Person2[2].EmailAddress, tContextMocks.RequestForm["Person2[2].EmailAddress"], "Person2[2].EmailAddress");
+			Assert.AreEqual(tData.Person2[2].FirstName, tContextMocks.RequestForm["Person2[2].FirstName"], "Person2[2].FirstName");
+			Assert.AreEqual(tData.Person2[2].LastName, tContextMocks.RequestForm["Person2[2].LastName"], "Person2[2].LastName");
+
+			Assert.IsNotNull(tData.two_d, "two_d null");
+			Assert.IsNotNull(tData.two_d[0], "two_d[0] null");
+			Assert.AreEqual(tData.two_d[0][0], tContextMocks.RequestForm["two_d[0][0]"], "two_d[0][0]");
+			Assert.AreEqual(tData.two_d[0][1], tContextMocks.RequestForm["two_d[0][1]"], "two_d[0][1]");
+			Assert.AreEqual(tData.two_d[1][0], tContextMocks.RequestForm["two_d[1][0]"], "two_d[1][0]");
+			Assert.AreEqual(tData.two_d[1][1], tContextMocks.RequestForm["two_d[1][1]"], "two_d[1][1]");
+
+			Assert.AreEqual(tData.ride[0].property, tContextMocks.RequestForm["ride[0].property"], "ride[0].property");
 		}
 	}
 }
