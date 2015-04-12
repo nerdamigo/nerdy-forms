@@ -6,17 +6,25 @@ using System.Web.Mvc;
 
 namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 {
-	public class HomeController : Controller
+	public class SampleController : Controller
 	{
-		public ActionResult Index()
+		public ActionResult Basic()
 		{
 			return View();
 		}
 
-		public ActionResult Contact()
+		public ActionResult IOC()
 		{
-			ViewBag.Message = "Your contact page.";
+			return View();
+		}
 
+		public ActionResult MultiHandler()
+		{
+			return View();
+		}
+
+		public ActionResult Complex()
+		{
 			return View();
 		}
 	}

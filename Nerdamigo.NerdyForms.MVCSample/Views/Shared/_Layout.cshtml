@@ -1,43 +1,62 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewBag.Title - NerdyForms - Quick, Easy, Flexible Form Handling</title>
 
+	<style type="text/css">
+		.body-content {
+			padding-top: 60px;
+		}
+	</style>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				@Html.ActionLink("NerdyForms Sample App", "Index", "Home", new { }, new { @class = "navbar-brand" })
+			</div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+			<div class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li>@Html.ActionLink("Home", "Index", "Home")</li>
+
+					<li class="dropdown">
+						<a class="pointer dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Examples <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li>@Html.ActionLink("Basic", "Basic", "Sample")</li>
+							<li>@Html.ActionLink("Multiple Handlers", "MultiHandler", "Sample")</li>
+							<li>@Html.ActionLink("Complex Form Data", "Complex", "Sample")</li>
+							<li>@Html.ActionLink("Inversion of Control", "IOC", "Sample")</li>
+						</ul>
+					</li>
+					
+					<li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container body-content">
+		@RenderBody()
+
+		<hr />
+		<footer>
+			<p><a target="_blank" href="https://nerdamigo.com">A NerdAmigo Production</a></p>
+		</footer>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	@RenderSection("scripts", required: false)
 </body>
 </html>

@@ -48,6 +48,7 @@ namespace Nerdamigo.NerdyForms
 			}
 
 			tData._Metadata = new NerdyFormDynamic();
+			tData._Metadata.SubmissionID = Guid.NewGuid();
 			tData._Metadata.Request = new NerdyFormDynamic();
 			tData._Metadata.Request.RawUrl = Request.RawUrl;
 			tData._Metadata.Request.Headers = new Dictionary<string, string>();
