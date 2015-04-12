@@ -77,6 +77,7 @@ namespace Nerdamigo.NerdyForms
 			return new EmptyResult();
 		}
 
+		
 		private void ProcessKey(string aFormKey, dynamic aData, string aFormValue)
 		{
 			string[] tDotSplits = aFormKey.Split('.');
@@ -123,9 +124,14 @@ namespace Nerdamigo.NerdyForms
 				throw new ArgumentException(String.Format("Invalid Form Key List Index {0}", aFormKey));
 			}
 
-			string tPropertyName = aFormKey.Substring(0, tStartIdx);
+			string tPropertyName = null;
+			tPropertyName = tStartIdx > 0 ? aFormKey.Substring(0, tStartIdx) : "";
 			string tConstructedPropertyWithIndex = String.Format("{0}[{1}]", tPropertyName, tIndex);
-			if (tConstructedPropertyWithIndex == aFormKey)
+			if(tConstructedPropertyWithIndex == aFormKey && tConstructedPropertyWithIndex[0] == '[')
+			{
+				//dealing with a multi-dimensional list of strings
+			}
+			else if (tConstructedPropertyWithIndex == aFormKey)
 			{
 				//we are dealing with a list of strings directly
 				List<string> tItems;
@@ -145,10 +151,10 @@ namespace Nerdamigo.NerdyForms
 			else if(aFormKey.IndexOf(String.Format("{0}.", tConstructedPropertyWithIndex)) == 0)
 			{
 				//dealing with a List<dynamic>
-				List<dynamic> tItems;
-				if (aData[tPropertyName] == null || aData[tPropertyName].GetType() != typeof(List<dynamic>))
+				List<NerdyFormDynamic> tItems;
+				if (aData[tPropertyName] == null || aData[tPropertyName].GetType() != typeof(List<NerdyFormDynamic>))
 				{
-					tItems = new List<dynamic>();
+					tItems = new List<NerdyFormDynamic>();
 					aData[tPropertyName] = tItems;
 				}
 				else
@@ -164,6 +170,29 @@ namespace Nerdamigo.NerdyForms
 				}
 				dynamic tSubData = tItems[tIndex];
 				ProcessKey(aFormKey.Substring(tConstructedPropertyWithIndex.Length + 1), tSubData, aFormValue);
+			}
+			else if (aFormKey.IndexOf(String.Format("{0}[", tConstructedPropertyWithIndex)) == 0)
+			{
+				//dealing with a List<List<something>>
+				List<NerdyFormDynamic> tItems;
+				if (aData[tPropertyName] == null || aData[tPropertyName].GetType() != typeof(List<NerdyFormDynamic>))
+				{
+					tItems = new List<NerdyFormDynamic>();
+					aData[tPropertyName] = tItems;
+				}
+				else
+				{
+					tItems = aData[tPropertyName];
+				}
+
+				while (tItems.Count < tIndex) tItems.Add(null);
+
+				if (tItems.Count <= tIndex || tItems[tIndex] == null)
+				{
+					tItems.Add(new NerdyFormDynamic());
+				}
+				dynamic tSubData = tItems[tIndex];
+				ProcessList(aFormKey.Substring(tConstructedPropertyWithIndex.Length), tSubData, aFormValue);
 			}
 		}
 

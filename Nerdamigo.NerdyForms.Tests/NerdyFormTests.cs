@@ -101,6 +101,7 @@ namespace Nerdamigo.NerdyForms.Tests
 			tContextMocks.RequestForm.Add("Person.EmailAddress", "test@test.com");
 			tContextMocks.RequestForm.Add("Person.FirstName", "Bob");
 			tContextMocks.RequestForm.Add("Person.LastName", "McTaggart");
+
 			tContextMocks.RequestForm.Add("Person2[0].EmailAddress", "test@test.com");
 			tContextMocks.RequestForm.Add("Person2[0].FirstName", "Bob");
 			tContextMocks.RequestForm.Add("Person2[0].LastName", "McTaggart");
@@ -110,12 +111,20 @@ namespace Nerdamigo.NerdyForms.Tests
 			tContextMocks.RequestForm.Add("Person2[2].EmailAddress", "test3@test.com");
 			tContextMocks.RequestForm.Add("Person2[2].FirstName", "Bob3");
 			tContextMocks.RequestForm.Add("Person2[2].LastName", "McTaggart3");
-			tContextMocks.RequestForm.Add("two_d[0][0]", "00");
-			tContextMocks.RequestForm.Add("two_d[0][1]", "01");
-			tContextMocks.RequestForm.Add("two_d[1][0]", "10");
-			tContextMocks.RequestForm.Add("two_d[1][1]", "11");
+
 			tContextMocks.RequestForm.Add("ride[0]", "goesaway");
 			tContextMocks.RequestForm.Add("ride[0].property", "overidden!");
+
+			tContextMocks.RequestForm.Add("multi[0].level[0].lists[0]", "works");
+			tContextMocks.RequestForm.Add("multi[0].level[1].lists[0].property", "works");
+
+			//tContextMocks.RequestForm.Add("two_d[0][0]", "00");
+			//tContextMocks.RequestForm.Add("two_d[0][1]", "01");
+			//tContextMocks.RequestForm.Add("two_d[1][0]", "10");
+			//tContextMocks.RequestForm.Add("two_d[1][1]", "11");
+			//
+			//tContextMocks.RequestForm.Add("two_d_props[1][0].a", "10a");
+			//tContextMocks.RequestForm.Add("two_d_props[1][0].b", "10b");
 
 			dynamic tData = null;
 			tMock.Setup(handler => handler.Handle(It.IsAny<object>())).Callback<dynamic>(data =>
@@ -143,14 +152,25 @@ namespace Nerdamigo.NerdyForms.Tests
 			Assert.AreEqual(tData.Person2[2].FirstName, tContextMocks.RequestForm["Person2[2].FirstName"], "Person2[2].FirstName");
 			Assert.AreEqual(tData.Person2[2].LastName, tContextMocks.RequestForm["Person2[2].LastName"], "Person2[2].LastName");
 
-			Assert.IsNotNull(tData.two_d, "two_d null");
-			Assert.IsNotNull(tData.two_d[0], "two_d[0] null");
-			Assert.AreEqual(tData.two_d[0][0], tContextMocks.RequestForm["two_d[0][0]"], "two_d[0][0]");
-			Assert.AreEqual(tData.two_d[0][1], tContextMocks.RequestForm["two_d[0][1]"], "two_d[0][1]");
-			Assert.AreEqual(tData.two_d[1][0], tContextMocks.RequestForm["two_d[1][0]"], "two_d[1][0]");
-			Assert.AreEqual(tData.two_d[1][1], tContextMocks.RequestForm["two_d[1][1]"], "two_d[1][1]");
-
+			Assert.AreNotEqual(tData.ride[0], tContextMocks.RequestForm["ride[0]"], "ride[0] should not exist");
 			Assert.AreEqual(tData.ride[0].property, tContextMocks.RequestForm["ride[0].property"], "ride[0].property");
+
+			Assert.AreEqual(tData.multi[0].level[0].lists[0], tContextMocks.RequestForm["multi[0].level[0].lists[0]"], "multi[0].level[0].lists[0]");
+			Assert.AreEqual(tData.multi[0].level[1].lists[0].property, tContextMocks.RequestForm["multi[0].level[1].lists[0].property"], "multi[0].level[1].lists[0].property");
+
+			//have to work out the parsing for these bindings
+			//Assert.IsNotNull(tData.two_d, "two_d null");
+			//Assert.IsNotNull(tData.two_d[0], "two_d[0] null");
+			//Assert.AreEqual(tData.two_d[0][0], tContextMocks.RequestForm["two_d[0][0]"], "two_d[0][0]");
+			//Assert.AreEqual(tData.two_d[0][1], tContextMocks.RequestForm["two_d[0][1]"], "two_d[0][1]");
+			//Assert.AreEqual(tData.two_d[1][0], tContextMocks.RequestForm["two_d[1][0]"], "two_d[1][0]");
+			//Assert.AreEqual(tData.two_d[1][1], tContextMocks.RequestForm["two_d[1][1]"], "two_d[1][1]");
+			//
+			//Assert.IsNotNull(tData.two_d_props, "two_d_props null");
+			//Assert.IsNotNull(tData.two_d_props[1], "two_d_props[1] null");
+			//Assert.IsNotNull(tData.two_d_props[1][0], "two_d_props[1][0] null");
+			//Assert.AreEqual(tData.two_d_props[1][0].a, tContextMocks.RequestForm["two_d_props[1][0].a"], "two_d_props[1][0].a");
+			//Assert.AreEqual(tData.two_d_props[1][0].b, tContextMocks.RequestForm["two_d_props[1][0].b"], "two_d_props[1][0].b");
 		}
 	}
 }
