@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Nerdamigo.NerdyForms.MVCSample.Code;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,6 +11,7 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 	{
 		public ActionResult Basic()
 		{
+			ViewBag.RecentSubmissions = InMemoryNerdyFormHandler.Submissions.Take(5);
 			return View();
 		}
 
@@ -24,6 +26,11 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 		}
 
 		public ActionResult Complex()
+		{
+			return View();
+		}
+
+		public ActionResult Inheritance()
 		{
 			return View();
 		}

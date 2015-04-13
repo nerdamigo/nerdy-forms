@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Dynamic;
 using System.Text.RegularExpressions;
+using System.Web.WebPages;
 
 namespace Nerdamigo.NerdyForms
 {
 	public class NerdyFormController : Controller
 	{
-		private List<INerdyFormHandler> mFormHandlerList;
-		public NerdyFormController(List<INerdyFormHandler> aFormHandlerList)
+		private INerdyFormHandler mFormHandler;
+		public NerdyFormController(INerdyFormHandler aFormHandler)
 		{
-			if (aFormHandlerList == null || aFormHandlerList.Count == 0 || aFormHandlerList.Any(a => a == null))
+			if (aFormHandler == null)
 			{
 				throw new ArgumentException("aFormHandlerList");
 			}
 
-			mFormHandlerList = aFormHandlerList;
+			mFormHandler = aFormHandler;
 		}
 
 		public virtual ActionResult Handle(string FormName)
@@ -31,21 +32,10 @@ namespace Nerdamigo.NerdyForms
 				throw new ArgumentException("Form Name is Required");
 			}
 
+
+			dynamic tData = ProcessFormData();
+
 			List<Exception> tEncounteredExceptions = new List<Exception>();
-
-			dynamic tData = new NerdyFormDynamic();
-
-			foreach (string iFormKey in Request.Form.AllKeys.OrderBy(s => s))
-			{
-				try
-				{
-					ProcessKey(iFormKey, tData, Request.Form[iFormKey]);
-				}
-				catch (Exception ex)
-				{
-					tEncounteredExceptions.Add(ex);
-				}
-			}
 
 			tData._Metadata = new NerdyFormDynamic();
 			tData._Metadata.SubmissionID = Guid.NewGuid();
@@ -58,24 +48,48 @@ namespace Nerdamigo.NerdyForms
 				tData._Metadata.Request.Headers.Add(iHeaderKey, Request.Headers[iHeaderKey]);
 			}
 
-			foreach (INerdyFormHandler aHandler in mFormHandlerList)
+			mFormHandler.Handle(tData);
+
+			if (Request.IsAjaxRequest())
+			{
+				return new EmptyResult();
+			}
+			else
+			{
+				string tReferringUrl = Request.UrlReferrer.PathAndQuery;
+				string tRedirectToUrl = Request.Form["RedirectTo"];
+
+				//post-redirect-get and watch out for open redirects
+				if (!String.IsNullOrEmpty(tRedirectToUrl) && RequestExtensions.IsUrlLocalToHost(Request, tRedirectToUrl))
+				{
+					return new RedirectResult(tRedirectToUrl, false);
+				}
+				else if (RequestExtensions.IsUrlLocalToHost(Request, tReferringUrl))
+				{
+					return new RedirectResult(tReferringUrl, false);
+				}
+				else
+				{
+					return new RedirectResult("/");
+				}
+			}
+		}
+
+		protected virtual dynamic ProcessFormData()
+		{
+			dynamic tData = new NerdyFormDynamic();
+
+			foreach (string iFormKey in Request.Form.AllKeys.OrderBy(s => s))
 			{
 				try
 				{
-					aHandler.Handle(tData);
+					ProcessKey(iFormKey, tData, Request.Form[iFormKey]);
 				}
-				catch(Exception ex)
+				catch (NerdyFormKeyDecodeException)
 				{
-					tEncounteredExceptions.Add(ex);
 				}
 			}
-
-			if (tEncounteredExceptions.Count > 0)
-			{
-				throw new AggregateException("One or more form handling exceptions encountered", tEncounteredExceptions);
-			}
-
-			return new EmptyResult();
+			return tData;
 		}
 
 		
@@ -115,14 +129,14 @@ namespace Nerdamigo.NerdyForms
 
 			if (tStartIdx == -1 || tEndIdx == -1 || tEndIdx - tStartIdx < 1)
 			{
-				throw new ArgumentException(String.Format("Invalid Form Key {0}", aFormKey));
+				throw new NerdyFormKeyDecodeException(String.Format("Invalid Form Key {0}", aFormKey));
 			}
 
 			string tIndexString = aFormKey.Substring(tStartIdx + 1, tEndIdx - tStartIdx - 1);
 			int tIndex;
 			if (!int.TryParse(tIndexString, out tIndex))
 			{
-				throw new ArgumentException(String.Format("Invalid Form Key List Index {0}", aFormKey));
+				throw new NerdyFormKeyDecodeException(String.Format("Invalid Form Key List Index {0}", aFormKey));
 			}
 
 			string tPropertyName = null;
@@ -204,7 +218,7 @@ namespace Nerdamigo.NerdyForms
 			string tSanitized = tInvalidKeyChars.Replace(iToken, "");
 			if (!tValidKey.IsMatch(tSanitized))
 			{
-				throw new ArgumentException(String.Format("Token could not be sanitized {0}", iToken));
+				throw new NerdyFormKeyDecodeException(String.Format("Token could not be sanitized {0}", iToken));
 			}
 
 			return tSanitized;

@@ -16,6 +16,12 @@ namespace Nerdamigo.NerdyForms.MVCSample
 			RouteTable.Routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 			RouteTable.Routes.MapRoute(
+				name: "NerdyForms",
+				url: "Form/{FormName}",
+				defaults: new { controller = "SampleForm", action = "Handle" }
+			);
+
+			RouteTable.Routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",
 				defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
