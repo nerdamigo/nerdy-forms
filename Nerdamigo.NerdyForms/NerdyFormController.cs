@@ -37,8 +37,10 @@ namespace Nerdamigo.NerdyForms
 
 			List<Exception> tEncounteredExceptions = new List<Exception>();
 
+			tData.FormName = FormName;
 			tData._Metadata = new NerdyFormDynamic();
 			tData._Metadata.SubmissionID = Guid.NewGuid();
+			tData._Metadata.SubmissionDttmUtc = DateTime.UtcNow;
 			tData._Metadata.Request = new NerdyFormDynamic();
 			tData._Metadata.Request.RawUrl = Request.RawUrl;
 			tData._Metadata.Request.Headers = new Dictionary<string, string>();
@@ -56,7 +58,7 @@ namespace Nerdamigo.NerdyForms
 			}
 			else
 			{
-				string tReferringUrl = Request.UrlReferrer.PathAndQuery;
+				string tReferringUrl = Request.UrlReferrer != null ? Request.UrlReferrer.PathAndQuery : null;
 				string tRedirectToUrl = Request.Form["RedirectTo"];
 
 				//post-redirect-get and watch out for open redirects
@@ -64,7 +66,7 @@ namespace Nerdamigo.NerdyForms
 				{
 					return new RedirectResult(tRedirectToUrl, false);
 				}
-				else if (RequestExtensions.IsUrlLocalToHost(Request, tReferringUrl))
+				else if (!String.IsNullOrEmpty(tReferringUrl) && RequestExtensions.IsUrlLocalToHost(Request, tReferringUrl))
 				{
 					return new RedirectResult(tReferringUrl, false);
 				}

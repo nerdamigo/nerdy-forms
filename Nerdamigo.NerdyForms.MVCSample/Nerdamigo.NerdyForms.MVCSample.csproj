@@ -141,6 +141,12 @@
       <Name>Nerdamigo.NerdyForms</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Sample\MultiHandler.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Sample\Complex.cshtml" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -11,12 +11,13 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 	{
 		public ActionResult Basic()
 		{
-			ViewBag.RecentSubmissions = InMemoryNerdyFormHandler.Submissions.Take(5);
+			ViewBag.RecentSubmissions = InMemoryNerdyFormHandler.GetSubmissions("Basic").Take(5);
 			return View();
 		}
 
-		public ActionResult IOC()
+		public ActionResult Complex()
 		{
+			ViewBag.RecentSubmissions = InMemoryNerdyFormHandler.GetSubmissions("Complex").Take(5);
 			return View();
 		}
 
@@ -25,7 +26,7 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 			return View();
 		}
 
-		public ActionResult Complex()
+		public ActionResult IOC()
 		{
 			return View();
 		}

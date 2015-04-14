@@ -10,35 +10,44 @@ namespace Nerdamigo.NerdyForms.MVCSample.Code
 {
 	public class InMemoryNerdyFormHandler : INerdyFormHandler
 	{
-		private static ConcurrentQueue<object> mSubmissions;
+		private static ConcurrentDictionary<string, ConcurrentQueue<object>> mSubmissions;
 		static InMemoryNerdyFormHandler()
 		{
-			mSubmissions = new ConcurrentQueue<object>();
+			mSubmissions = new ConcurrentDictionary<string, ConcurrentQueue<object>>();
 		}
 
-		public static List<object> Submissions
+		public static List<object> GetSubmissions(string aFormName)
 		{
-			get
+			List<object> tSubmissions = new List<object>();
+			ConcurrentQueue<object> tFormSumbissions;
+			if(mSubmissions.TryGetValue(aFormName, out tFormSumbissions)) 
 			{
-				List<object> tSubmissions = new List<object>();
-				foreach(object tSubmission in mSubmissions)
+				foreach (object tSubmission in tFormSumbissions)
 				{
 					object tClone = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(tSubmission));
 					tSubmissions.Add(tClone);
 				}
 
 				tSubmissions.Reverse();
-				return tSubmissions;
 			}
+
+			return tSubmissions;
 		}
 
 		public void Handle(dynamic aFormData)
 		{
-			mSubmissions.Enqueue(aFormData);
+			ConcurrentQueue<object> tFormSumbissions;
+			if (!mSubmissions.TryGetValue(aFormData.FormName, out tFormSumbissions))
+			{
+				tFormSumbissions = new ConcurrentQueue<object>();
+				mSubmissions.TryAdd(aFormData.FormName, tFormSumbissions);
+			}
+
+			tFormSumbissions.Enqueue(aFormData);
 			object tWasted;
 			while (mSubmissions.Count > 10)
 			{
-				mSubmissions.TryDequeue(out tWasted);
+				tFormSumbissions.TryDequeue(out tWasted);
 			}
 		}
 	}

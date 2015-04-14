@@ -16,27 +16,13 @@ namespace Nerdamigo.NerdyForms.Tests
 		{
 			NerdyFormController tController = new NerdyFormController(null);
 		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException), "An empty form handler list was allowed.")]
-		public void EmptyHandlerListThrowsConstructionException()
-		{
-			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>());
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException), "An form handler list containing a null handler was allowed.")]
-		public void ListContainingNullHandlerThrowsConstructionException()
-		{
-			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { (INerdyFormHandler)null });
-		}
-		
+				
 		[TestMethod]
 		public void DynamicFormObjectNotNull()
 		{
 			var tMock = new Mock<INerdyFormHandler>();
 			
-			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { tMock.Object });
+			NerdyFormController tController = new NerdyFormController(tMock.Object);
 			var tContextMocks = new ContextMocks(tController);
 
 			tController.Handle("Test");
@@ -48,7 +34,7 @@ namespace Nerdamigo.NerdyForms.Tests
 		public void DynamicFormObjectContainsMetadata()
 		{
 			var tMock = new Mock<INerdyFormHandler>();
-			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { tMock.Object });
+			NerdyFormController tController = new NerdyFormController(tMock.Object);
 			var tContextMocks = new ContextMocks(tController);
 			tContextMocks.RequestHeaders.Add("TestHeader", "TestValue");
 
@@ -62,6 +48,8 @@ namespace Nerdamigo.NerdyForms.Tests
 
 			tMock.Verify(handler => handler.Handle(It.IsAny<object>()));
 
+			Assert.IsNotNull(tData.FormName, "FormName missing");
+			Assert.AreEqual(tData.FormName, "Test");
 			Assert.IsNotNull(tData._Metadata, "_Metadata missing");
 			Assert.IsNotNull(tData._Metadata.Request, "Metadata.Request was null");
 			Assert.IsTrue(tData._Metadata.Request.Headers.ContainsKey("TestHeader"), "Metadata.Request.Headers[\"TestHeader\"] was null");
@@ -71,7 +59,7 @@ namespace Nerdamigo.NerdyForms.Tests
 		public void DynamicFormObjectContainsFormData()
 		{
 			var tMock = new Mock<INerdyFormHandler>();
-			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { tMock.Object });
+			NerdyFormController tController = new NerdyFormController(tMock.Object);
 			var tContextMocks = new ContextMocks(tController);
 			tContextMocks.RequestForm.Add("EmailAddress", "test@test.com");
 			tContextMocks.RequestForm.Add("FirstName", "Bob");
@@ -96,7 +84,7 @@ namespace Nerdamigo.NerdyForms.Tests
 		public void DynamicFormObjectSubObject()
 		{
 			var tMock = new Mock<INerdyFormHandler>();
-			NerdyFormController tController = new NerdyFormController(new List<INerdyFormHandler>() { tMock.Object });
+			NerdyFormController tController = new NerdyFormController(tMock.Object);
 			var tContextMocks = new ContextMocks(tController);
 			tContextMocks.RequestForm.Add("Person.EmailAddress", "test@test.com");
 			tContextMocks.RequestForm.Add("Person.FirstName", "Bob");
