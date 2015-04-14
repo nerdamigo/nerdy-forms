@@ -1,2 +1,5 @@
-﻿language: csharp
-solution: Nerdamigo.NerdyForms.MVCSample.sln
+﻿language: c
+install:
+  - nuget restore Nerdamigo.NerdyForms.MVCSample.sln
+script:
+	- xbuild /p:Configuration=Debug Nerdamigo.NerdyForms.MVCSample.sln
