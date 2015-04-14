@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerdamigo.NerdyForms", "Ner
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nerdamigo.NerdyForms.Tests", "Nerdamigo.NerdyForms.Tests\Nerdamigo.NerdyForms.Tests.csproj", "{948BF699-24B3-4045-9C27-02E99944ED98}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4F063A29-B2F6-4156-BC2E-8829C59889F7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{4F063A29-B2F6-4156-BC2E-8829C59889F7}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 	EndProjectSection
