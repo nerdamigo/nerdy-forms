@@ -32,9 +32,5 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 			return View();
 		}
 
-		public ActionResult MultiHandler()
-		{
-			return View();
-		}
 	}
 }

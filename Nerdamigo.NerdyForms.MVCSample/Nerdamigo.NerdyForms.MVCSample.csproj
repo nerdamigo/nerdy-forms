@@ -154,9 +154,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Sample\MultiHandler.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Sample\Complex.cshtml" />
   </ItemGroup>
   <ItemGroup>
