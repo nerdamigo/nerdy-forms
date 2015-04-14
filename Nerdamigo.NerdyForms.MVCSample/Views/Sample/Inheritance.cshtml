@@ -1,0 +1,83 @@
+﻿@{
+	ViewBag.Title = "More Complex Data - Samples";
+}
+
+<div class="row">
+	<div class="col-md-8 col-md-push-2">
+		<h2>Overriding ProcessData</h2>
+
+		<p>
+			NerdyForms encourages you to inherit the base controller, and add additional processing logic. At this stage, the full request context is still
+			available - making it the place to nab cookies or whatever else your imagination conjurs up.
+		</p>
+
+		<div class="row">
+			<div class="col-md-6">
+				<form method="post" action="@Url.Action("Handle", "DerivedForm", new { FormName = "Inheritance" })">
+					<h3>Gum Flavor</h3>
+					<div class="person-form-group">
+						<div class="person-form">
+							<div class="form-group">
+								<label>Name</label>
+								<input type="text" class="form-control" name="GumFlavor" />
+							</div>
+						</div>
+					</div>
+
+					<button type="submit" class="btn btn-primary">
+						<span class="glyphicon glyphicon-send"></span> Submit
+					</button>
+				</form>
+			</div>
+
+			<div class="col-md-6">
+				<h3>Most Recent Submissions</h3>
+				@foreach (dynamic iSubmission in ViewBag.RecentSubmissions)
+				{
+					<div class="panel panel-default">
+						<div class="panel-heading">Gum Flavor "@iSubmission.GumFlavor"</div>
+						<div class="panel-body">
+							Random Number: @iSubmission.RandomNumber
+					</div>
+				</div>
+				}
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Example Controller Code</h3>
+				<pre><code>public class DerivedFormController : NerdyForms.NerdyFormController
+{
+	public DerivedFormController()
+		: base(new InMemoryNerdyFormHandler())
+	{
+	}
+	protected override dynamic ProcessFormData()
+	{
+		var tBaseData = base.ProcessFormData();
+		//modify the processed incoming data as you see fit
+		tBaseData.RandomNumber = (new Random()).Next(int.MaxValue);
+		//before returning it to the base controller for handling
+		return tBaseData;
+	}
+}</code></pre>
+
+			</div>
+		</div>
+
+				<div id="disqus_thread"></div>
+				<script type="text/javascript">
+					/* * * CONFIGURATION VARIABLES * * */
+					var disqus_shortname = 'nerdyforms';
+
+					/* * * DON'T EDIT BELOW THIS LINE * * */
+					(function () {
+						var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+						dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+						(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+					})();
+				</script>
+				<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+			</div>
+		</div>

@@ -21,8 +21,9 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 			return View();
 		}
 
-		public ActionResult MultiHandler()
+		public ActionResult Inheritance()
 		{
+			ViewBag.RecentSubmissions = InMemoryNerdyFormHandler.GetSubmissions("Inheritance").Take(5);
 			return View();
 		}
 
@@ -31,7 +32,7 @@ namespace Nerdamigo.NerdyForms.MVCSample.Controllers
 			return View();
 		}
 
-		public ActionResult Inheritance()
+		public ActionResult MultiHandler()
 		{
 			return View();
 		}

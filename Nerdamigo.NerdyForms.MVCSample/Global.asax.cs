@@ -22,6 +22,12 @@ namespace Nerdamigo.NerdyForms.MVCSample
 			);
 
 			RouteTable.Routes.MapRoute(
+				name: "NerdyForms_Derived",
+				url: "DerivedForm/{FormName}",
+				defaults: new { controller = "DerivedForm", action = "Handle" }
+			);
+
+			RouteTable.Routes.MapRoute(
 				name: "Default",
 				url: "{controller}/{action}/{id}",
 				defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
