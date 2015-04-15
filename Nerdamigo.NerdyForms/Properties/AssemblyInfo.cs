@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Nerdamigo.NerdyForms")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Quick and Easy handling of HTML forms for ASP.Net MVC")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("NerdAmigo")]
 [assembly: AssemblyProduct("Nerdamigo.NerdyForms")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
